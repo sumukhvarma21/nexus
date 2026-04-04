@@ -1,0 +1,13 @@
+venv/
+.env
+__pycache__/
+*.pyc
+*.pyo
+chroma_store/
+uploads/
+.vscode/
+.DS_Store
+eval/results.md
+*.egg-info/
+dist/
+build/

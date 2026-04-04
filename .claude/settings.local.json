@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/aditya/sumukh/**)",
+      "Bash(python3.12 --version)"
+    ]
+  }
+}
