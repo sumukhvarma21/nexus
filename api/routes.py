@@ -8,7 +8,7 @@ from pydantic import BaseModel
 
 from config import settings
 from rag.ingestion import ingest_file
-from rag.retrieval import retrieve
+from rag.retrieval import retrieve, retrieve_with_hyde, retrieve_multi_step, retrieve_iterative
 
 app = FastAPI(title="Nexus", version="0.1.0")
 
@@ -17,6 +17,11 @@ os.makedirs(settings.uploads_dir, exist_ok=True)
 
 class QueryRequest(BaseModel):
     query: str
+
+
+class AdvancedQueryRequest(BaseModel):
+    query: str
+    mode: str = "multi_step"  # standard | hyde | multi_step | iterative
 
 
 @app.get("/health")
@@ -81,3 +86,73 @@ async def query(request: QueryRequest):
         "sources": sources,
         "chunks_used": len(chunks),
     }
+
+
+@app.post("/query/advanced")
+async def query_advanced(request: AdvancedQueryRequest):
+    """
+    Multi-step RAG query endpoint.
+
+    Modes:
+      - standard:   baseline two-stage retrieval (same as /query)
+      - hyde:       HyDE — embed hypothetical answer instead of raw query
+      - multi_step: decompose query → retrieve per sub-question → merge
+      - iterative:  retrieve → check sufficiency → refine → repeat (max 3 hops)
+    """
+    if not request.query.strip():
+        raise HTTPException(status_code=400, detail="Query cannot be empty")
+
+    valid_modes = {"standard", "hyde", "multi_step", "iterative"}
+    if request.mode not in valid_modes:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid mode '{request.mode}'. Choose from: {sorted(valid_modes)}",
+        )
+
+    hops_used = None
+
+    if request.mode == "standard":
+        chunks = retrieve(request.query)
+    elif request.mode == "hyde":
+        chunks = retrieve_with_hyde(request.query)
+    elif request.mode == "multi_step":
+        chunks = retrieve_multi_step(request.query)
+    elif request.mode == "iterative":
+        chunks, hops_used = retrieve_iterative(request.query)
+
+    if not chunks:
+        return {"answer": "No relevant documents found.", "sources": [], "mode": request.mode}
+
+    from langchain_google_genai import ChatGoogleGenerativeAI
+    from langchain.schema import HumanMessage, SystemMessage
+
+    context = "\n\n---\n\n".join(c["content"] for c in chunks)
+    sources = list({c["source_file"] for c in chunks})
+
+    llm = ChatGoogleGenerativeAI(
+        model=settings.gemini_model,
+        google_api_key=settings.google_api_key,
+    )
+
+    messages = [
+        SystemMessage(
+            content=(
+                "You are a helpful assistant. Answer the user's question using only "
+                "the provided context. If the context doesn't contain the answer, say so."
+            )
+        ),
+        HumanMessage(content=f"Context:\n{context}\n\nQuestion: {request.query}"),
+    ]
+
+    response = llm.invoke(messages)
+
+    result = {
+        "answer": response.content,
+        "sources": sources,
+        "chunks_used": len(chunks),
+        "mode": request.mode,
+    }
+    if hops_used is not None:
+        result["hops_used"] = hops_used
+
+    return result

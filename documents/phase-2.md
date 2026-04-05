@@ -53,12 +53,25 @@ Retrieve → LLM decides "I need more info about X" → Refine query → Retriev
 
 ## Deliverables
 
-- [ ] `rag/query_processor.py` — query decomposition using Gemini structured output
-- [ ] HyDE retrieval as a configurable option alongside standard retrieval
-- [ ] Iterative retrieval loop (max 3 hops, configurable)
-- [ ] `eval/ragas_eval.py` — RAGAS evaluation script with test question set
-- [ ] A/B comparison: standard vs multi-step RAG across 10 test queries
-- [ ] Document metric results in `eval/results.md`
+- [x] `rag/query_processor.py` — query decomposition, HyDE, sufficiency check using Gemini structured output
+- [x] HyDE retrieval (`retrieve_with_hyde`) as a configurable option alongside standard retrieval
+- [x] Iterative retrieval loop (`retrieve_iterative`, max 3 hops, configurable)
+- [x] Multi-step decomposition retrieval (`retrieve_multi_step`)
+- [x] `POST /query/advanced` — new endpoint with `mode` param (`standard | hyde | multi_step | iterative`)
+- [x] `eval/ragas_eval.py` — RAGAS evaluation script with test question set
+- [x] `eval/test_questions.py` — 10 test questions (ground truths to fill after ingesting docs)
+- [ ] A/B comparison: standard vs multi-step RAG across 10 test queries — **pending test run**
+- [ ] Document metric results in `eval/results.md` — **pending test run**
+
+## Alternatives & Fallbacks Covered (Theory)
+
+| Strategy | Solves | Risk |
+|---|---|---|
+| HyDE | Query/doc style mismatch | Hallucinated vocabulary |
+| Multi-Query | Vocabulary mismatch | More LLM calls |
+| Hybrid Search (BM25+dense) | Both mismatch types | Infrastructure (Phase 7 / Qdrant) |
+| Step-Back Prompting | Over-specific queries | May retrieve too general |
+| RAG-Fusion | General retrieval quality | Slowest, most LLM calls |
 
 ## Packages
 

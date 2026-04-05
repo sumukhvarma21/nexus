@@ -1,0 +1,25 @@
+NEXUS AI PLATFORM — FREQUENTLY ASKED QUESTIONS
+
+WHAT IS NEXUS?
+Nexus is a general-purpose AI assistant platform that lets users upload documents and ask questions about them. It uses retrieval-augmented generation (RAG) to find relevant sections of your documents and generate accurate, grounded answers using a large language model.
+
+HOW DO I UPLOAD A DOCUMENT?
+Use the Upload button on the dashboard or call the POST /ingest API endpoint with your file attached as multipart form data. Supported formats are PDF and TXT. Files up to 50MB are supported. Processing typically completes within 30 seconds for documents under 100 pages.
+
+HOW DOES THE SEARCH WORK?
+Nexus uses a two-stage retrieval pipeline. First, a bi-encoder model embeds your query and finds the top 20 most similar document chunks using approximate nearest neighbor search. Then a cross-encoder reranks those 20 results to return the top 5 most relevant chunks. The LLM receives the larger parent chunks around those top results for full context.
+
+WHAT QUERY MODES ARE AVAILABLE?
+Nexus supports four query modes. Standard mode runs basic two-stage retrieval. HyDE mode generates a hypothetical answer to your question and uses that for retrieval, which improves accuracy when your query is phrased differently from the document. Multi-step mode breaks compound questions into sub-questions and retrieves for each. Iterative mode repeatedly refines retrieval until the context is sufficient to answer your question.
+
+HOW IS MY DATA STORED?
+Documents are stored in a local ChromaDB vector store during development. In production, Nexus uses Qdrant hosted on AWS for scalability. Raw uploaded files are stored in an S3-compatible object store. Data is encrypted at rest and in transit. Documents are never shared between users.
+
+WHAT ARE THE RATE LIMITS?
+Free tier users can make up to 100 queries per day and ingest up to 10 documents per month. Pro tier users have 1000 queries per day and unlimited ingestion. Enterprise tier has no rate limits and includes dedicated infrastructure.
+
+HOW DO I DELETE MY DATA?
+You can delete individual documents via the dashboard or the DELETE /documents/{id} API endpoint. Deleting a document removes all associated chunks from the vector store and the raw file from storage. Account deletion removes all data within 30 days.
+
+WHAT IF THE ANSWER IS WRONG?
+Nexus answers are grounded in your documents. If an answer seems wrong, check the source chunks returned with the response. If the relevant information is in your document but not being retrieved, try rephrasing your question or switching to a different query mode such as multi-step or iterative.

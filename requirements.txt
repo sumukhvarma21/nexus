@@ -17,3 +17,7 @@ sentence-transformers==3.3.1
 pypdf==5.1.0
 python-multipart==0.0.20
 numpy<2
+
+# Phase 2 — Multi-Step RAG + Evaluation
+ragas==0.2.14
+datasets==3.2.0

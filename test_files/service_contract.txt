@@ -1,0 +1,24 @@
+SERVICE AGREEMENT
+
+This Service Agreement ("Agreement") is entered into as of January 1, 2025, between Acme Corp ("Client") and TechBuild Solutions ("Provider").
+
+PAYMENT SCHEDULE
+The Client agrees to pay the Provider a monthly retainer of $10,000, due on the 1st of each calendar month. A one-time onboarding fee of $5,000 is due within 7 days of signing. Invoices unpaid after 15 days accrue interest at 1.5% per month. If payment is more than 30 days late, the Provider may suspend services without liability.
+
+TERMINATION
+Either party may terminate this Agreement with 30 days written notice. The Client may terminate immediately for cause if the Provider materially breaches this Agreement and fails to cure the breach within 10 days of written notice. Upon termination, all outstanding invoices become immediately due.
+
+CONFIDENTIALITY
+Both parties agree to keep the other's proprietary information strictly confidential during the term and for 2 years after termination. Neither party may disclose the other's trade secrets, pricing, or business strategies to third parties without prior written consent.
+
+LIABILITY
+The Provider's total liability under this Agreement shall not exceed the total fees paid in the 3 months preceding the claim. Neither party is liable for indirect, incidental, or consequential damages.
+
+INTELLECTUAL PROPERTY
+All work product created by the Provider specifically for the Client under this Agreement is owned by the Client upon full payment. Pre-existing tools and frameworks used by the Provider remain the Provider's property.
+
+DISPUTE RESOLUTION
+Disputes shall first be attempted through good-faith negotiation. If unresolved within 30 days, disputes shall be submitted to binding arbitration in San Francisco, California under AAA Commercial Arbitration Rules. This Agreement is governed by the laws of the State of California.
+
+WARRANTIES
+The Provider warrants that services will be performed in a professional manner consistent with industry standards. The Provider does not warrant that deliverables will be error-free. All other warranties, express or implied, are disclaimed.

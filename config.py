@@ -6,7 +6,7 @@ class Settings(BaseSettings):
 
     # LLM
     google_api_key: str
-    gemini_model: str = "gemini-2.5-flash-preview-04-17"
+    gemini_model: str = "gemini-2.5-flash"
 
     # Embeddings
     embedding_model: str = "BAAI/bge-base-en-v1.5"
