@@ -61,6 +61,25 @@ sqlalchemy
 aiosqlite
 ```
 
+## Future Improvement — Query Condensation
+
+When a user asks a follow-up question ("what if I pay late?"), the raw query has no context.
+Before retrieval, condense the conversation history + current query into a single standalone query using an LLM call.
+
+**Where:** inside `agents/rag_agent.py`, before the retrieval call.
+**When to trigger:** only if `state["messages"]` is non-empty (skip on first turn).
+**How:**
+
+```python
+def condense_query(messages: list[BaseMessage], current_query: str) -> str:
+    """Rewrite current_query as a standalone question using conversation history."""
+    ...
+    # returns e.g. "What are the consequences of late payment in the service contract?"
+```
+
+**Why not now:** session message threading (the prerequisite) is not yet wired across turns.
+Implement after short-term session store is in place.
+
 ## Next
 
 → [Phase 5: MCP Server](phase-5.md)

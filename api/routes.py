@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from config import settings
 from rag.ingestion import ingest_file
 from rag.retrieval import retrieve, retrieve_with_hyde, retrieve_multi_step, retrieve_iterative
+from agents.orchestrator import run_chat
 
 app = FastAPI(title="Nexus", version="0.1.0")
 
@@ -17,6 +18,11 @@ os.makedirs(settings.uploads_dir, exist_ok=True)
 
 class QueryRequest(BaseModel):
     query: str
+
+
+class ChatRequest(BaseModel):
+    query: str
+    session_id: str = ""
 
 
 class AdvancedQueryRequest(BaseModel):
@@ -156,3 +162,27 @@ async def query_advanced(request: AdvancedQueryRequest):
         result["hops_used"] = hops_used
 
     return result
+
+
+@app.post("/chat")
+async def chat(request: ChatRequest):
+    """
+    Multi-agent chat endpoint (Phase 3).
+
+    The supervisor routes the query to the appropriate agent:
+      - rag_agent        → queries about uploaded documents
+      - web_search_agent → queries needing current/external information
+
+    Returns the answer plus metadata about which agent was used.
+    """
+    if not request.query.strip():
+        raise HTTPException(status_code=400, detail="Query cannot be empty")
+
+    result = run_chat(request.query, session_id=request.session_id)
+
+    return {
+        "answer": result["answer"],
+        "agent_called": result["agent_called"],
+        "sources_used": len(result["retrieved_context"]) + len(result["web_results"]),
+        "session_id": result["session_id"],
+    }

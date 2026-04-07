@@ -1,0 +1,2 @@
+Sources used: 5 chunk(s)
+Agent: RAG Agent (documents)

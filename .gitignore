@@ -3,11 +3,35 @@ venv/
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
+
+# Vector store & uploads
 chroma_store/
 uploads/
+
+# Long-term memory DB
+memory.db
+
+# Chainlit
+.chainlit/
+chainlit.md
+
+# Editors
 .vscode/
+.idea/
 .DS_Store
+
+# Eval output
 eval/results.md
+
+# Build artifacts
 *.egg-info/
 dist/
 build/
+
+# Pytest
+.pytest_cache/
+
+# Coverage
+.coverage
+htmlcov/

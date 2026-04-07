@@ -21,3 +21,18 @@ numpy<2
 # Phase 2 — Multi-Step RAG + Evaluation
 ragas==0.2.14
 datasets==3.2.0
+
+# Phase 3 — LangGraph Orchestrator
+langgraph==0.2.74
+tavily-python>=0.3.0
+
+# Phase 4 — Memory
+sqlalchemy>=2.0
+aiosqlite
+
+# Phase 5 — MCP Server + Email/Calendar Agent
+fastmcp
+mcp
+
+# Phase 6 — Chainlit UI
+chainlit
